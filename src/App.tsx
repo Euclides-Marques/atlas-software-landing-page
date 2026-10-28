@@ -1,3 +1,4 @@
+import { useInitialHashScroll } from './hooks/useInitialHashScroll'
 import { About } from './sections/About'
 import { Contact } from './sections/Contact'
 import { Faq } from './sections/Faq'
@@ -9,6 +10,8 @@ import { Projects } from './sections/Projects'
 import { Services } from './sections/Services'
 
 export function App() {
+  useInitialHashScroll()
+
   return (
     <>
       <a href="#conteudo" className="skip-link">
