@@ -132,6 +132,25 @@ test('navegação desktop leva às seções', async ({ page }) => {
   await expect(page.locator('#processo-title')).toBeInViewport()
 })
 
+test('abrir a página com âncora na URL rola até a seção (links externos, ex.: Linktree)', async ({ page }) => {
+  for (const id of SECTIONS) {
+    // Carregamento do zero, como ao chegar por um link externo (sem navegação dentro do mesmo documento).
+    await page.goto('about:blank')
+    await page.goto(`/#${id}`)
+    await expect(page.locator(`#${id}-title`), `/#${id}`).toBeInViewport()
+    expect(await page.evaluate(() => window.scrollY), `/#${id}`).toBeGreaterThan(0)
+  }
+})
+
+test('âncora malformada na URL não quebra a página', async ({ page }) => {
+  const errors: string[] = []
+  page.on('pageerror', (error) => errors.push(error.message))
+  await page.goto('about:blank')
+  await page.goto('/#%E0%A4')
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  expect(errors).toEqual([])
+})
+
 test('link para pular ao conteúdo é o primeiro foco', async ({ page }) => {
   await page.keyboard.press('Tab')
   const skip = page.getByRole('link', { name: 'Pular para o conteúdo' })
